@@ -8,7 +8,7 @@ def registrar_empleado():
     with open("empleados.txt", "a", encoding="utf-8") as archivo:
         archivo.write(linea)
     print("Empleado registrado con éxito.\n")
-       def validar_empleado(id_empleado):
+def validar_empleado(id_empleado):
     try:
         with open("empleados.txt", "r", encoding="utf-8") as archivo:
             for linea in archivo:
