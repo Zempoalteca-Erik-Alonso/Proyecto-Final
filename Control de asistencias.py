@@ -45,7 +45,7 @@ def empleado_y_asistencias():
     try:
         with open("empleados.txt", "r", encoding="utf-8") as f:
             for linea in f:
-                if linea.startswith(id_empleado + ","):
+                if linea.startswith(id_emp + ","):
                     resultado += "Empleado: " + linea
                     break
             else:
