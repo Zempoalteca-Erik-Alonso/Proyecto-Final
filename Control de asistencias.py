@@ -6,7 +6,7 @@ def registrar_empleado():
     nombre = entry_nombre.get()
     rol = entry_rol.get()
     if not id_emp or not nombre or not rol:
-        messagebox.showwarning("faltan datos")
+        messagebox.showwarning("aviso", "faltan datos")
         return
     with open("empleados.txt", "a", encoding="utf-8") as f:
         f.write(f"{id_emp},{nombre},{rol}\n")
@@ -30,14 +30,14 @@ def registrar_asistencia():
         messagebox.showerror("Error", "El empleado no está registrado.")
         return
     if tipo not in ["E", "S"]:
-        messagebox.showerror("Error")
+        messagebox.showerror("Error", "(E) entrada (S) salida")
         return
     ahora = datetime.now()
     fecha = ahora.strftime("%Y-%m-%d")
     hora = ahora.strftime("%H:%M:%S")    
     with open("asistencias.txt", "a", encoding="utf-8") as f:
         f.write(f"{id_emp},{tipo},{fecha},{hora}\n")
-    messagebox.showinfo("asistencia registrada.")
+    messagebox.showinfo("aviso", "asistencia registrada.")
     entry_asist_id.delete(0, tk.END)
 def empleado_y_asistencias():
     id_emp = entry_consulta_id.get()
@@ -66,16 +66,41 @@ def dia_justificado():
     tipo = var_just_tipo.get()
     fecha = entry_just_fecha.get()
     if not validar_empleado(id_emp):
-        messagebox.showerror("Error")
+        messagebox.showerror("Error", "no esta registrado")
         return
     if tipo not in ["vacaciones", "economico"]:
-        messagebox.showerror("Error")
+        messagebox.showerror("Error", "Error")
         return
     with open("justificaciones.txt", "a", encoding="utf-8") as f:
         f.write(f"{id_emp},{tipo},{fecha}\n")
-    messagebox.showinfo("dia justificado registrado.")
+    messagebox.showinfo("aviso", "dia justificado registrado.")
     entry_just_id.delete(0, tk.END)
     entry_just_fecha.delete(0, tk.END)
+def anular_justificado():
+    id_emp = entry_anular_id.get()
+    tipo = var_anular_tipo.get()
+    fecha = entry_anular_fecha.get()
+    try:
+        with open("justificaciones.txt", "r", encoding="utf-8") as f:
+            lineas = f.readlines()
+    except FileNotFoundError:
+        messagebox.showerror("error", "no se encontro el archivo de las justificaciones")
+        return
+    nueva_lista = []
+    encontrado = False
+    for linea in lineas:
+        if linea.strip() != f"{id_emp},{tipo},{fecha}":
+            nueva_lista.append(linea)
+        else:
+            encontrado = True
+    if encontrado:
+        with open("justificaciones.txt", "w", encoding="utf-8") as f:
+            f.writelines(nueva_lista)
+        messagebox.showinfo("ventana", "justificacion eliminada.")
+    else:
+        messagebox.showinfo("error", "la justificacion no se encontro o no existe")
+    entry_anular_id.delete(0, tk.END)
+    entry_anular_fecha.delete(0, tk.END)
 ventana = tk.Tk()
 ventana.title("Sistema de Control de Asistencias - Hospital")
 tk.Label(ventana, text="registro de empleado").grid(row=0, column=0, columnspan=2)
@@ -113,5 +138,15 @@ tk.Label(ventana, text="fecha (YYYY-MM-DD):").grid(row=15, column=0)
 entry_just_fecha = tk.Entry(ventana)
 entry_just_fecha.grid(row=15, column=1)
 tk.Button(ventana, text="registrar justificacion", command=dia_justificado).grid(row=16, column=0, columnspan=2)
+tk.Label(ventana, text="\nAnular día justificado").grid(row=17, column=0, columnspan=2)
+tk.Label(ventana, text="ID:").grid(row=18, column=0)
+entry_anular_id = tk.Entry(ventana)
+entry_anular_id.grid(row=18, column=1)
+tk.Label(ventana, text="Tipo:").grid(row=19, column=0)
+var_anular_tipo = tk.StringVar()
+tk.Entry(ventana, textvariable=var_anular_tipo).grid(row=19, column=1)
+tk.Label(ventana, text="Fecha (YYYY-MM-DD):").grid(row=20, column=0)
+entry_anular_fecha = tk.Entry(ventana)
+entry_anular_fecha.grid(row=20, column=1)
+tk.Button(ventana, text="Eliminar Justificación", command=anular_justificado).grid(row=21, column=0, columnspan=2)
 ventana.mainloop()
-        
