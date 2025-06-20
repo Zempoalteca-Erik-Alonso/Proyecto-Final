@@ -63,13 +63,29 @@ def empleado_y_asistencias():
                 print("no hay asistencias")
     except FileNotFoundError:
         print("no se ha registrado asistencia todavia")
+def dia_justificado():
+    print("DIA ECONOMICO O VACACIONES")
+    id_empleado = input("ID del empleado: ")
+    if not validar_empleado(id_empleado):
+        print("ID no encontrado")
+        return
+    tipo = input("tipo de dia (vacaciones/economico): ").strip().lower()
+    if tipo not in ["vacaciones", "economico"]:
+        print("no valido")
+        return
+    fecha = input("fecha del dia solicitado (YYYY-MM-DD): ")
+    linea = f"{id_empleado},{tipo},{fecha}\n"
+    with open("justificaciones.txt", "a", encoding="utf-8") as archivo:
+        archivo.write(linea)
+    print("dia justificado registrado\n")
 def main():
     while True:
         print("MENU PRINCIPAL")
         print("1. registrar a un empleado")
         print("2. asistencia")
         print("3. checar empleado y asistencias")
-        print("4. Salir")
+        print("4. agregar dias justificados")
+        print("5. Salir")
         opcion = input("elige una opción (1/2/3/4): ")
         if opcion == "1":
             registrar_empleado()
@@ -78,6 +94,8 @@ def main():
         elif opcion == "3":
              empleado_y_asistencias()
         elif opcion == "4":
+            dia_justificado()
+        elif opcion == "5":
             print("saliendo.")
             break
         else:
