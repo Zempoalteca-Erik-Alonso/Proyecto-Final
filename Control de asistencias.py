@@ -68,7 +68,7 @@ def main():
         print("MENU PRINCIPAL")
         print("1. registrar a un empleado")
         print("2. asistencia")
-        print ("3. checar empleado y asistencias")
+        print("3. checar empleado y asistencias")
         print("4. Salir")
         opcion = input("elige una opción (1/2/3/4): ")
         if opcion == "1":
